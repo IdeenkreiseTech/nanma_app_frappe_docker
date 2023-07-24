@@ -1,16 +1,12 @@
+git_password=123
+
 cd ../
 yes|docker builder prune --all
 
-export APPS_JSON='[
-  {
-    "url": "https://github.com/frappe/erpnext",
-    "branch": "v13.52.1"
-  },
-  {
-    "url": "https://IdeenkreiseTech:git_password@github.com/IdeenkreiseTech/hybrid_90plus_app.git",
-    "branch": "payment-update"
-  }
-]'
+# Create the JSON string with proper formatting
+app1='{"url": "https://github.com/frappe/erpnext","branch": "v13.52.1"}'
+app2='{"url": "https://IdeenkreiseTech:'"$git_password"'@github.com/IdeenkreiseTech/hybrid_90plus_app.git","branch": "payment-update"}'
+export APPS_JSON='['"$app1"', '"$app2"']'
 export APPS_JSON_BASE64=$(echo ${APPS_JSON} | base64 -w 0)
 
 sudo docker build \
