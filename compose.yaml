@@ -2,7 +2,7 @@ x-customizable-image: &customizable_image
   # By default the image used only contains the `frappe` and `erpnext` apps.
   # See https://github.com/frappe/frappe_docker/blob/main/docs/custom-apps.md
   # about using custom images.
-  image: ghcr.io/ideenkreisetech/hybrid_90plus_app/hybrid_90plus_app:1.0.0
+  image: ghcr.io/ideenkreisetech/nanma_app/nanma_app:1.0.0
 
 x-depends-on-configurator: &depends_on_configurator
   depends_on:
