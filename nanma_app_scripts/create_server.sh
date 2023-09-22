@@ -1,8 +1,8 @@
 # Create Site and Install Application
 db_password=123
 admin_password=123
-encryption_key=KLVoO9DiUm1eoW3i7kWDsqrguCPu96XeX3FNNDLSrLg=
-git_password=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
+encryption_key=123
+git_password=123
 site_name=15.207.121.10
 cd ../
 sudo docker login ghcr.io -u IdeenkreiseTech -p $git_password

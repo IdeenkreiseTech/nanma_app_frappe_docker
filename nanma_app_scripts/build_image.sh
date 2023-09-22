@@ -1,10 +1,10 @@
-git_password=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
+git_password=123
 
 cd ../
 yes|docker builder prune --all
 
 # Create the JSON string with proper formatting
-app1='{"url": "https://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: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@github.com/IdeenkreiseTech/nanma_app.git","branch": "prod"}'
+app1='{"url": "https://123:123@github.com/IdeenkreiseTech/nanma_app.git","branch": "prod"}'
 export APPS_JSON='['"$app1"']'
 export APPS_JSON_BASE64=$(echo ${APPS_JSON} | base64 -w 0)
 

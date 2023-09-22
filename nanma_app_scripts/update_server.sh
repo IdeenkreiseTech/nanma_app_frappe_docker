@@ -1,5 +1,5 @@
 # Update code in site
-git_password=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
+git_password=123
 site_name=15.207.121.10
 
 cd ../
