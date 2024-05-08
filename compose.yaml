@@ -17,9 +17,11 @@ x-backend-defaults: &backend_defaults
 services:
   configurator:
     <<: *backend_defaults
+    platform: linux/amd64
     entrypoint:
       - bash
       - -c
+    # add redis_socketio for backward compatibility
     command:
       - >
         ls -1 apps > sites/apps.txt;
@@ -27,14 +29,13 @@ services:
         bench set-config -gp db_port $$DB_PORT;
         bench set-config -g redis_cache "redis://$$REDIS_CACHE";
         bench set-config -g redis_queue "redis://$$REDIS_QUEUE";
-        bench set-config -g redis_socketio "redis://$$REDIS_SOCKETIO";
+        bench set-config -g redis_socketio "redis://$$REDIS_QUEUE";
         bench set-config -gp socketio_port $$SOCKETIO_PORT;
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       REDIS_CACHE: ${REDIS_CACHE}
       REDIS_QUEUE: ${REDIS_QUEUE}
-      REDIS_SOCKETIO: ${REDIS_SOCKETIO}
       SOCKETIO_PORT: 9000
     depends_on: {}
 
@@ -50,9 +51,11 @@ services:
         "--timeout=120",
         "--preload",
         "frappe.app:application"]
+    platform: linux/amd64
 
   frontend:
     <<: *customizable_image
+    platform: linux/amd64
     command:
       - nginx-entrypoint.sh
     environment:
@@ -62,7 +65,7 @@ services:
       UPSTREAM_REAL_IP_ADDRESS: ${UPSTREAM_REAL_IP_ADDRESS:-127.0.0.1}
       UPSTREAM_REAL_IP_HEADER: ${UPSTREAM_REAL_IP_HEADER:-X-Forwarded-For}
       UPSTREAM_REAL_IP_RECURSIVE: ${UPSTREAM_REAL_IP_RECURSIVE:-off}
-      PROXY_READ_TIMOUT: ${PROXY_READ_TIMOUT:-120}
+      PROXY_READ_TIMEOUT: ${PROXY_READ_TIMEOUT:-120}
       CLIENT_MAX_BODY_SIZE: ${CLIENT_MAX_BODY_SIZE:-50m}
     volumes:
       - sites:/home/frappe/frappe-bench/sites
@@ -72,6 +75,7 @@ services:
 
   websocket:
     <<: [*depends_on_configurator, *customizable_image]
+    platform: linux/amd64
     command:
       - node
       - /home/frappe/frappe-bench/apps/frappe/socketio.js
@@ -80,18 +84,17 @@ services:
 
   queue-short:
     <<: *backend_defaults
-    command: bench worker --queue short
-
-  queue-default:
-    <<: *backend_defaults
-    command: bench worker --queue default
+    platform: linux/amd64
+    command: bench worker --queue short,default
 
   queue-long:
     <<: *backend_defaults
-    command: bench worker --queue long
+    platform: linux/amd64
+    command: bench worker --queue long,default,short
 
   scheduler:
     <<: *backend_defaults
+    platform: linux/amd64
     command: bench schedule
 
 # ERPNext requires local assets access (Frappe does not)
